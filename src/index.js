@@ -65,7 +65,7 @@ function reduce(array, fn, initial) {
  */
 function upperProps(obj) {
 
-    let arr = []
+    let arr = [];
 
     for (const name in obj) {
         arr.push(name.toUpperCase())
@@ -81,7 +81,7 @@ function upperProps(obj) {
  Посмотрите как работает slice и повторите это поведение для массива, который будет передан в параметре array
  */
 function slice(array, from = 0, to = array.length) {
-    let arr = []
+    let arr = [];
     let j = 0;
 
     if (to < 0) {
