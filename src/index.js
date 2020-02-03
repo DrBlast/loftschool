@@ -37,8 +37,6 @@ function map(array, fn) {
  */
 function reduce(array, fn, initial) {
 
-    // callback(previousValue, currentItem, index, arr):
-
     let prev;
     let start = 0;
 
@@ -53,6 +51,7 @@ function reduce(array, fn, initial) {
         prev = fn(prev, array[i], i, array)
     }
 
+    return prev;
 }
 
 /*
