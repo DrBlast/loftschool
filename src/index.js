@@ -114,7 +114,8 @@ function createProxy(obj) {
 
                 return true;
             }
-            throw new Error(`Only numbers accepted. Property ${key} is not a number`);
+
+            return false;
         }
     });
 }
