@@ -7,7 +7,6 @@
  Посмотрите как работает forEach и повторите это поведение для массива, который будет передан в параметре array
  */
 function forEach(array, fn) {
-
     for (let i = 0; i < array.length; i++) {
         fn(array[i], i, array)
     }
@@ -36,7 +35,6 @@ function map(array, fn) {
  Посмотрите как работает reduce и повторите это поведение для массива, который будет передан в параметре array
  */
 function reduce(array, fn, initial) {
-
     let prev;
     let start = 0;
 
@@ -63,7 +61,6 @@ function reduce(array, fn, initial) {
    upperProps({ name: 'Сергей', lastName: 'Петров' }) вернет ['NAME', 'LASTNAME']
  */
 function upperProps(obj) {
-
     let arr = [];
 
     for (const name in obj) {
@@ -110,6 +107,16 @@ function slice(array, from = 0, to = array.length) {
  Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
  */
 function createProxy(obj) {
+    return new Proxy(obj, {
+        set: (target, key, value) => {
+            if (typeof value == 'number') {
+                target[key] = value * value;
+
+                return true;
+            }
+            throw new Error(`Only numbers accepted. Property ${key} is not a number`);
+        }
+    });
 }
 
 export {
