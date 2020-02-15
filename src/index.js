@@ -52,9 +52,11 @@ function prepend(what, where) {
 function findAllPSiblings(where) {
     const result = [];
 
-    where.childNodes.forEach(el => {
-        if (el.nextElementSibling === 'p') {
-            result.push(el);
+    where.querySelectorAll('p').forEach(el => {
+        let prevElement = el.previousElementSibling;
+
+        if (prevElement) {
+            result.push(prevElement);
         }
     });
 
@@ -79,9 +81,9 @@ function findAllPSiblings(where) {
    findError(document.body) // функция должна вернуть массив с элементами 'привет' и 'loftschool'
  */
 function findError(where) {
-    var result = [];
+    const result = [];
 
-    for (var child of where.childNodes) {
+    for (const child of where.children) {
         result.push(child.innerText);
     }
 
@@ -103,10 +105,9 @@ function findError(where) {
 function deleteTextNodes(where) {
     for (let child of where.childNodes) {
         if (child.nodeType === 3) {
-            child.remove();
+            where.removeChild(child);
         }
     }
-
 }
 
 /*
@@ -121,15 +122,17 @@ function deleteTextNodes(where) {
    должно быть преобразовано в <span><div><b></b></div><p></p></span>
  */
 function deleteTextNodesRecursive(where) {
-    for (let i =0; i < where.childNodes.length; i++) {
-        let curNode = where.childNodes[i];
 
-        if (curNode.nodeType === 1) {
-            return deleteTextNodesRecursive(curNode);
-        } else if (curNode.nodeType === 3) {
-            curNode.remove();
+    let nodes = [...where.childNodes];
+
+    nodes.forEach(el => {
+        if (el.nodeType === 3) {
+            el.remove();
         }
-    }
+        if (el.childNodes.length > 0) {
+            deleteTextNodesRecursive(el);
+        }
+    });
 }
 
 /*
@@ -152,7 +155,42 @@ function deleteTextNodesRecursive(where) {
      texts: 3
    }
  */
-function collectDOMStat(root) {
+function collectDOMStat(root, obj) {
+    if (obj === undefined) {
+        obj = {
+            texts: 0,
+            classes: {},
+            tags: {}
+        };
+    }
+
+    root.childNodes.forEach(el => {
+        if (el.nodeType === 3) {
+            obj.texts++;
+        }
+
+        if (el.nodeType === 1) {
+            if (obj.tags.hasOwnProperty(el.tagName)) {
+                obj.tags[el.tagName]++;
+            } else {
+                obj.tags[el.tagName] = 1;
+            }
+
+            for (const className of el.classList) {
+                if (obj.classes.hasOwnProperty(className)) {
+                    obj.classes[className]++;
+                } else {
+                    obj.classes[className] = 1;
+                }
+            }
+        }
+
+        if (el.childNodes.length > 0) {
+            collectDOMStat(el, obj)
+        }
+    });
+
+    return obj;
 }
 
 /*
@@ -188,6 +226,36 @@ function collectDOMStat(root) {
    }
  */
 function observeChildNodes(where, fn) {
+    let observer = new MutationObserver(mutationRecords => {
+        mutationRecords.forEach(mutation => {
+            const obj = {
+                type: '',
+                nodes: []
+            };
+            let isRemoved = true;
+
+            for (let node of mutation.removedNodes) {
+                obj.nodes.push(node);
+            }
+            for (let node of mutation.addedNodes) {
+                obj.nodes.push(node);
+                isRemoved = false;
+            }
+            if (isRemoved) {
+                obj.type = 'remove'
+            } else {
+                obj.type = 'insert'
+            }
+
+            fn(obj);
+        })
+    });
+
+    observer.observe(where, {
+        childList: true, // наблюдать за непосредственными детьми
+        subtree: true, // и более глубокими потомками
+        characterDataOldValue: true // передавать старое значение в колбэк
+    });
 }
 
 export {
