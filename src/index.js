@@ -53,8 +53,12 @@ function findAllPSiblings(where) {
     const result = [];
 
     where.childNodes.forEach(el => {
-        if (el.nextElementSibling === 'p') {
-            result.push(el);
+        let nextEl = el.nextElementSibling;
+
+        if (nextEl) {
+            if (nextEl.nodeName === 'P') {
+                result.push(el);
+            }
         }
     });
 
@@ -82,7 +86,9 @@ function findError(where) {
     var result = [];
 
     for (var child of where.childNodes) {
-        result.push(child.innerText);
+        if (child.nodeType === 1) {
+            result.push(child.innerText);
+        }
     }
 
     return result;
@@ -121,15 +127,17 @@ function deleteTextNodes(where) {
    должно быть преобразовано в <span><div><b></b></div><p></p></span>
  */
 function deleteTextNodesRecursive(where) {
-    for (let i =0; i < where.childNodes.length; i++) {
-        let curNode = where.childNodes[i];
 
-        if (curNode.nodeType === 1) {
-            return deleteTextNodesRecursive(curNode);
-        } else if (curNode.nodeType === 3) {
-            curNode.remove();
+    where.childNodes.forEach(el => {
+        if (el.nodeType === 1) {
+            return deleteTextNodesRecursive(el);
         }
-    }
+        if (el.nodeType === 3){
+            el.remove();
+        }
+
+    });
+
 }
 
 /*
