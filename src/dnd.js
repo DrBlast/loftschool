@@ -26,7 +26,28 @@ const homeworkContainer = document.querySelector('#homework-container');
    const newDiv = createDiv();
    homeworkContainer.appendChild(newDiv);
  */
+
 function createDiv() {
+    const newDiv = document.createElement('div');
+    const documentHeight = document.documentElement.clientHeight;
+    const documentWidth = document.documentElement.clientWidth;
+    const elTop = Math.floor(Math.random() * documentHeight) + 1;
+    const elLeft = Math.floor(Math.random() * documentWidth) + 1;
+
+    const elHeight = Math.floor(Math.random() * (documentHeight - elTop)) + 1;
+    const elWidth = Math.floor(Math.random() * (documentWidth - elLeft)) + 1;
+
+    newDiv.classList.add('draggable-div');
+    newDiv.style.position = "absolute";
+    newDiv.style.top = elTop + "px";
+    newDiv.style.left = elLeft + "px";
+    newDiv.style.width = elWidth + "px";
+    newDiv.style.height = elHeight + "px";
+    newDiv.style.color = "#"+((1<<24)*Math.random()|0).toString(16);
+    newDiv.style.backgroundColor = "#"+((1<<24)*Math.random()|0).toString(16);
+
+    return newDiv;
+  //  homeworkContainer.appendChild(newDiv);
 }
 
 /*
@@ -38,6 +59,8 @@ function createDiv() {
    addListeners(newDiv);
  */
 function addListeners(target) {
+
+
 }
 
 let addDivButton = homeworkContainer.querySelector('#addDiv');
