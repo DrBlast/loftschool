@@ -51,8 +51,9 @@ function prepend(what, where) {
  */
 function findAllPSiblings(where) {
     const result = [];
+    const pTags = where.querySelectorAll('p');
 
-    where.querySelectorAll('p').forEach(el => {
+    pTags.forEach(el => {
         let prevElement = el.previousElementSibling;
 
         if (prevElement) {
