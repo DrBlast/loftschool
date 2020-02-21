@@ -39,20 +39,27 @@ const homeworkContainer = document.querySelector('#homework-container');
 function loadTowns() {
     const citiesUrl = 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json';
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
 
         xhr.open('GET', citiesUrl);
         xhr.responseType = 'json';
         xhr.send();
         xhr.addEventListener('load', () => {
-            const citiesJson = xhr.response;
-            const sortedCities = citiesJson.sort(function (a, b) {
-                return a.name.localeCompare(b.name)
-            });
+            if (xhr.status >= 400) {
+                reject();
+            } else {
+                const citiesJson = xhr.response;
+                const sortedCities = citiesJson.sort(function (a, b) {
+                    return a.name.localeCompare(b.name)
+                });
 
-            resolve(sortedCities);
-        })
+                resolve(sortedCities);
+            }
+        });
+
+        xhr.addEventListener('error', reject);
+        xhr.addEventListener('abort', reject);
 
     })
 }
@@ -85,7 +92,7 @@ filterInput.addEventListener('keyup', function () {
     loadTowns().then((towns) => {
         filterResult.innerHTML = '';
         loadingBlock.style.display = 'inline';
-        if (filterInput.value.trim() !== '') {
+        if (filterInput.value !== '') {
             towns.forEach(town => {
                 if (isMatching(town.name, filterInput.value)) {
                     let p = document.createElement('p');
@@ -96,9 +103,23 @@ filterInput.addEventListener('keyup', function () {
             });
         }
         loadingBlock.style.display = 'none';
+    }).catch(() => {
+        const newDiv = document.createElement('div');
+        let p = document.createElement('p');
+        p.textContent = 'Не удалось загрузить города';
+        newDiv.appendChild(p);
+        var btnRepeat = document.createElement("BUTTON");   // Create a <button> element
+        btnRepeat.innerHTML = "Повторить";
+        newDiv.appendChild(btnRepeat);
+        homeworkContainer.appendChild(newDiv);
+        btnRepeat.addEventListener('click', () => {
+            newDiv.style.display = 'none';
+            filterBlock.style.display = 'block';
+         });
     })
     // это обработчик нажатия кливиш в текстовом поле
 });
+
 
 export {
     loadTowns,
