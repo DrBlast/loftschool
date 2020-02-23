@@ -92,8 +92,10 @@ filterInput.addEventListener('keyup', function () {
     loadTowns().then((towns) => {
         filterResult.innerHTML = '';
         loadingBlock.style.display = 'inline';
+
         if (filterInput.value !== '') {
             towns.forEach(town => {
+
                 if (isMatching(town.name, filterInput.value)) {
                     let p = document.createElement('p');
 
@@ -106,20 +108,21 @@ filterInput.addEventListener('keyup', function () {
     }).catch(() => {
         const newDiv = document.createElement('div');
         let p = document.createElement('p');
+
         p.textContent = 'Не удалось загрузить города';
         newDiv.appendChild(p);
-        var btnRepeat = document.createElement("BUTTON");   // Create a <button> element
-        btnRepeat.innerHTML = "Повторить";
+        let btnRepeat = document.createElement('button');
+
+        btnRepeat.innerHTML = 'Повторить';
         newDiv.appendChild(btnRepeat);
         homeworkContainer.appendChild(newDiv);
+
         btnRepeat.addEventListener('click', () => {
             newDiv.style.display = 'none';
             filterBlock.style.display = 'block';
-         });
+        });
     })
-    // это обработчик нажатия кливиш в текстовом поле
 });
-
 
 export {
     loadTowns,
