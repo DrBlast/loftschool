@@ -97,7 +97,7 @@ filterInput.addEventListener('keyup', function () {
             towns.forEach(town => {
 
                 if (isMatching(town.name, filterInput.value)) {
-                    let p = document.createElement('p');
+                    const p = document.createElement('p');
 
                     p.textContent = town.name;
                     filterResult.appendChild(p);
@@ -107,11 +107,11 @@ filterInput.addEventListener('keyup', function () {
         loadingBlock.style.display = 'none';
     }).catch(() => {
         const newDiv = document.createElement('div');
-        let p = document.createElement('p');
+        const p = document.createElement('p');
 
         p.textContent = 'Не удалось загрузить города';
         newDiv.appendChild(p);
-        let btnRepeat = document.createElement('button');
+        const btnRepeat = document.createElement('button');
 
         btnRepeat.innerHTML = 'Повторить';
         newDiv.appendChild(btnRepeat);
