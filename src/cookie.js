@@ -43,10 +43,90 @@ const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
-filterNameInput.addEventListener('keyup', function() {
+let cookies = {};
+
+function getCookies() {
+    let allCookies = document.cookie.split(';');
+
+    allCookies.forEach(cookie => {
+        let pair = cookie.split('=');
+
+        cookies[pair[0]] = pair[1];
+    });
+
+    return cookies;
+}
+
+function deleteCookie(name) {
+    document.cookie = name + '=; Max-Age=-1;';
+}
+
+function displayCookie(cookieList) {
+    const fragment = document.createDocumentFragment();
+
+    listTable.innerHTML = '';
+
+    for (let [name, value] of Object.entries(cookieList)) {
+        const tr = document.createElement('tr');
+        const tdName = document.createElement('td');
+        const tdValue = document.createElement('td');
+
+        tdName.innerText = name;
+        tdValue.innerText = value.toString();
+        tr.appendChild(tdName);
+        tr.appendChild(tdValue);
+
+        const tdDelBtn = document.createElement('td');
+        const delBtn = document.createElement('button');
+
+        delBtn.innerText = 'X';
+        tdDelBtn.style.textAlign = 'center';
+
+        delBtn.addEventListener('click', () => {
+            tr.remove();
+            deleteCookie(name);
+        });
+
+        tdDelBtn.appendChild(delBtn);
+        tr.appendChild(tdDelBtn);
+        fragment.appendChild(tr);
+    }
+
+    listTable.appendChild(fragment);
+}
+
+function isMatching(name, value, chunk) {
+    const reg = new RegExp(chunk);
+
+    return ((name.search(reg) !== -1) || (value.search(reg) !== -1));
+}
+
+function filterCookie(filterValue) {
+    if (filterValue.length === 0) {
+        displayCookie(cookies);
+    } else {
+        let filteredCookies = {};
+
+        Object.entries(cookies).forEach(([name, value]) => {
+            if (isMatching(name, value, filterValue)) {
+                filteredCookies[name] = value;
+            }
+        });
+
+        displayCookie(filteredCookies);
+    }
+}
+
+filterNameInput.addEventListener('keyup', function () {
     // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
+    filterCookie(filterNameInput.value);
 });
 
 addButton.addEventListener('click', () => {
     // здесь можно обработать нажатие на кнопку "добавить cookie"
+    if (addNameInput.value.length !== 0 && addValueInput.value.length !== 0) {
+        document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+        getCookies();
+        filterCookie(filterNameInput.value);
+    }
 });
