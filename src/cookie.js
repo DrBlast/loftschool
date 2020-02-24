@@ -46,9 +46,13 @@ const listTable = homeworkContainer.querySelector('#list-table tbody');
 let cookies = {};
 
 function getCookies() {
-    let allCookies = document.cookie.split(';');
+    let allCookies = document.cookie;
 
-    allCookies.forEach(cookie => {
+    if (allCookies.length === 0){
+        return cookies;
+    }
+
+    allCookies.split(';').forEach(cookie => {
         let pair = cookie.split('=');
 
         cookies[pair[0]] = pair[1];
@@ -65,6 +69,9 @@ function displayCookie(cookieList = cookies) {
     const fragment = document.createDocumentFragment();
 
     listTable.innerHTML = '';
+    console.log('here');
+    console.log(cookieList);
+    console.log('here we are');
 
     for (let [name, value] of Object.entries(cookieList)) {
         const tr = document.createElement('tr');
@@ -106,6 +113,9 @@ function filterCookie(filterValue) {
         displayCookie();
     } else {
         let filteredCookies = {};
+
+        console.log(cookies);
+        console.log('filetcookie we displayed all');
 
         Object.entries(cookies).forEach(([name, value]) => {
             if (isMatching(name, value, filterValue)) {
