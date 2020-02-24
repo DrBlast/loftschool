@@ -69,9 +69,6 @@ function displayCookie(cookieList = cookies) {
     const fragment = document.createDocumentFragment();
 
     listTable.innerHTML = '';
-    console.log('here');
-    console.log(cookieList);
-    console.log('here we are');
 
     for (let [name, value] of Object.entries(cookieList)) {
         const tr = document.createElement('tr');
@@ -113,9 +110,6 @@ function filterCookie(filterValue) {
         displayCookie();
     } else {
         let filteredCookies = {};
-
-        console.log(cookies);
-        console.log('filetcookie we displayed all');
 
         Object.entries(cookies).forEach(([name, value]) => {
             if (isMatching(name, value, filterValue)) {
