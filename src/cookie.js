@@ -61,7 +61,7 @@ function deleteCookie(name) {
     document.cookie = name + '=; Max-Age=-1;';
 }
 
-function displayCookie(cookieList) {
+function displayCookie(cookieList = cookies) {
     const fragment = document.createDocumentFragment();
 
     listTable.innerHTML = '';
@@ -103,7 +103,7 @@ function isMatching(name, value, chunk) {
 
 function filterCookie(filterValue) {
     if (filterValue.length === 0) {
-        displayCookie(cookies);
+        displayCookie();
     } else {
         let filteredCookies = {};
 
@@ -129,4 +129,10 @@ addButton.addEventListener('click', () => {
         getCookies();
         filterCookie(filterNameInput.value);
     }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    let existingCookies = getCookies();
+
+    displayCookie(existingCookies);
 });
