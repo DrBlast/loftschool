@@ -48,11 +48,11 @@ let cookies = {};
 function getCookies() {
     let allCookies = document.cookie;
 
-    if (allCookies.length === 0){
+    if (allCookies.length === 0) {
         return cookies;
     }
 
-    allCookies.split(';').forEach(cookie => {
+    allCookies.split('; ').forEach(cookie => {
         let pair = cookie.split('=');
 
         cookies[pair[0]] = pair[1];
@@ -62,6 +62,8 @@ function getCookies() {
 }
 
 function deleteCookie(name) {
+    delete cookies[name];
+
     document.cookie = name + '=; Max-Age=-1;';
 }
 
@@ -88,7 +90,7 @@ function displayCookie(cookieList = cookies) {
 
         delBtn.addEventListener('click', () => {
             tr.remove();
-            deleteCookie(name);
+            deleteCookie(name, value);
         });
 
         tdDelBtn.appendChild(delBtn);
